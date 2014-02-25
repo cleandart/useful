@@ -11,4 +11,5 @@ part 'uitertools.dart';
 part 'variation.dart';
 part 'generator.dart';
 part 'frozen_set.dart';
+part 'map_mixin.dart';
 

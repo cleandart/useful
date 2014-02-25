@@ -1,9 +1,10 @@
-name: yoseful
+name: useful
 author: Tomas Kulich <tomas.kulich@vacuumapps.com>
 version: 1.0.1
 homepage: http://vacuumlabs.com
 description: common useful utilities
 dependencies:
-  range: '>=1.1.0 <2.0.0'
+  range:
+    git: git@github.com:tomaskulich/dart-range.git
 dev_dependencies:
   unittest: any
