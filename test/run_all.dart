@@ -6,10 +6,12 @@
 import 'tuple_test.dart' as tuple_test;
 import 'priority_map_test.dart' as priority_map_test;
 import 'uitertools_test.dart' as uitertools_test;
+import 'clone_test.dart' as clone_test;
 
 main() {
   tuple_test.main();
   priority_map_test.main();
   uitertools_test.main();
+  clone_test.main();
 }
 
