@@ -126,7 +126,7 @@ randomPerm(List input){
     input[j] = tmp;
   }
 
-  for(num index in new Range(input.length)){
+  for(num index in range(input.length)){
       var newPlace = rnd.nextInt(index+1);
       swap(index, newPlace);
   };
