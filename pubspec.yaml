@@ -1,6 +1,6 @@
 name: useful
 author: Tomas Kulich <tomas.kulich@vacuumapps.com>
-version: 1.0.2
+version: 1.0.3
 homepage: http://vacuumlabs.com
 description: common useful utilities
 dependencies:

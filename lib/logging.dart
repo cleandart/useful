@@ -1,6 +1,6 @@
 part of useful;
 
-setupLogging(){
+setupDefaultLogHandler(){
   hierarchicalLoggingEnabled = true;
   Logger.root.level = Level.WARNING;
   Logger.root.onRecord.listen((LogRecord rec) {
