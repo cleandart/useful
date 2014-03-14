@@ -6,6 +6,6 @@ setupDefaultLogHandler(){
   Logger.root.onRecord.listen((LogRecord rec) {
     String errorStr = rec.error == null ? '' : ' ${rec.error}';
     String stackTraceStr = rec.stackTrace == null ? '' : ' ${rec.stackTrace}';
-    print('${rec.loggerName} ${rec.loggerName} ${rec.message} ${errorStr} ${stackTraceStr}');
+    print('${rec.loggerName} ${rec.message} ${errorStr} ${stackTraceStr}');
   });
 }
