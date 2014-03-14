@@ -1,8 +1,8 @@
 name: useful
+version: 1.0.4
 author: Tomas Kulich <tomas.kulich@vacuumapps.com>
-version: 1.0.3
-homepage: http://vacuumlabs.com
 description: common useful utilities
+homepage: http://vacuumlabs.com
 dependencies:
   logging: any
   quiver: any

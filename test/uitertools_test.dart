@@ -216,5 +216,10 @@ void main(){
 
   });
 
+  test('sum',(){
+    expect(sum([]), equals(0));
+    expect(sum([1,2,3]), equals(6));
+  });
+
 }
 

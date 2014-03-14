@@ -57,6 +57,18 @@ umax(Iterable col, {key:null}){
   return umaxf(col, key:key).elem;
 }
 
+sum(Iterable iterable) {
+  var res = 0;
+  for (var item in iterable) {
+    res += item;
+  }
+  return res;
+}
+
+len(Iterable iterable) {
+  return iterable.length;
+}
+
 sort(List input, {key:null, asc: true}) {
   if(key==null){
     key = (elem) => elem;
