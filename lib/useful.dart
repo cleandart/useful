@@ -14,5 +14,5 @@ part 'generator.dart';
 part 'frozen_set.dart';
 part 'map_mixin.dart';
 part 'logging.dart';
-part 'clone.dart';
+part 'collection_helpers.dart';
 

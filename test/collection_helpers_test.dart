@@ -56,4 +56,11 @@ main() {
             expect(copy[1].hashCode, isNot(equals(list[1].hashCode)));
       });
     });
+
+    test('slice', (){
+      Map map = {'a':1, 'b':2, 'c':3};
+      expect(slice(map, ['a', 'b']), equals({'a': 1, 'b':2}));
+      expect(slice(map, []), equals({}));
+      expect(slice(map, ['c', 'd', 'e']), equals({'c': 3}));
+    });
 }
