@@ -12,6 +12,7 @@ part 'uitertools.dart';
 part 'variation.dart';
 part 'generator.dart';
 part 'frozen_set.dart';
+part 'frozen_map.dart';
 part 'map_mixin.dart';
 part 'logging.dart';
 part 'collection_helpers.dart';
