@@ -31,13 +31,14 @@ void main() {
         'key2' : 'value2',
         'key3' : 3
       });
+      print(frozenMap);
 
       expect(frozenMap.length, equals(3));
-      expect(frozenMap, equals({
+      expect(frozenMap, equals(new FrozenMap.from({
         'key1' : 'value1',
         'key2' : 'value2',
         'key3' : 3
-      }));
+      })));
     });
 
     test('basic equality and hashcode', () {
@@ -59,10 +60,17 @@ void main() {
         null : 'value3'
       });
 
-      // sorted Map
+      // ordered Map
       var fm4 = new FrozenMap.from({
         'key2' : 'value2',
         null : 'value3',
+        'key1' : 'value1'
+      }, false);
+
+      // ordered Map
+      var fm5 = new FrozenMap.from({
+        null : 'value3',
+        'key2' : 'value2',
         'key1' : 'value1'
       }, false);
 
@@ -70,9 +78,7 @@ void main() {
       expect(fm1.hashCode == fm2.hashCode, isTrue);
       expect(fm1 == fm3, isFalse);
       expect(fm1.hashCode == fm3.hashCode, isFalse);
-      // needs to be implemented
-      expect(fm2 == fm4, isTrue);
-
+      expect(fm4 == fm5, isFalse);
     });
   });
 
