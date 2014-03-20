@@ -3,7 +3,7 @@ part of useful;
 class FrozenMap<K, V> {
   Map<K, V> _data;
   num _hash;
-  bool _unordered;
+  bool _ordered;
 
   int get hashCode => _hash;
   int get length => _data.length;
@@ -20,15 +20,15 @@ class FrozenMap<K, V> {
 
   void forEach(void f(K key, V value)) => _data.forEach(f);
 
-  FrozenMap([unordered=true]) {
+  FrozenMap([ordered=true]) {
     _data = new Map();
-    _unordered = unordered;
+    _ordered = ordered;
     _computeHash();
   }
 
-  FrozenMap.from(Map<K, V> other, [unordered=true]) {
+  FrozenMap.from(Map<K, V> other, [ordered=true]) {
     _data = new Map.from(other);
-    _unordered = unordered;
+    _ordered = ordered;
     _computeHash();
   }
 
@@ -36,7 +36,7 @@ class FrozenMap<K, V> {
     _hash = 0;
     var res;
 
-    if (_unordered) {
+    if (!_ordered) {
       _data.forEach((key, value) {
         var p = 16381;
         res = (key.hashCode % p) * (value.hashCode % p) ;

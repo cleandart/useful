@@ -31,7 +31,6 @@ void main() {
         'key2' : 'value2',
         'key3' : 3
       });
-      print(frozenMap);
 
       expect(frozenMap.length, equals(3));
       expect(frozenMap, equals(new FrozenMap.from({
@@ -46,33 +45,33 @@ void main() {
         'key1' : 'value1',
         'key2' : 'value2',
         null : 'value3'
-      });
+      }, false);
 
       var fm2 = new FrozenMap.from({
         'key2' : 'value2',
         null : 'value3',
         'key1' : 'value1'
-      });
+      }, false);
 
       var fm3 = new FrozenMap.from({
         'key1': 'value2',
         'key2': 'value1',
         null : 'value3'
-      });
+      }, false);
 
       // ordered Map
       var fm4 = new FrozenMap.from({
         'key2' : 'value2',
         null : 'value3',
         'key1' : 'value1'
-      }, false);
+      });
 
       // ordered Map
       var fm5 = new FrozenMap.from({
         null : 'value3',
         'key2' : 'value2',
         'key1' : 'value1'
-      }, false);
+      });
 
       expect(fm1 == fm2, isTrue);
       expect(fm1.hashCode == fm2.hashCode, isTrue);
