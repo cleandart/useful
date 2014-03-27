@@ -93,26 +93,6 @@ void main(){
     });
   });
 
-  group('FrozenSet', (){
 
-    test('basic set props', (){
-      var fs = new FrozenSet.from([1,2,2,3,3,3,4,4,4,4]);
-      expect(fs.length, equals(4));
-      expect(fs, unorderedEquals([1,2,3,4]));
-    });
-
-    test('equality and hashcode', (){
-      var fs123 = new FrozenSet.from([1,2,3]);
-      var fs321 = new FrozenSet.from([3,2,1]);
-      var fs1234 = new FrozenSet.from([1,2,3,4]);
-      expect(fs123 == fs321, isTrue);
-      expect(fs123 == fs1234, isFalse);
-      expect(fs123.hashCode == fs321.hashCode, isTrue);
-      expect(fs123.hashCode == fs1234.hashCode, isFalse);
-    });
-
-
-
-  });
 }
 
