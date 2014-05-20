@@ -63,4 +63,41 @@ main() {
       expect(slice(map, []), equals({}));
       expect(slice(map, ['c', 'd', 'e']), equals({'c': 3}));
     });
+
+    group('Merge maps', () {
+      test('merges maps correctly when possible.', () {
+        Duration hour = new Duration(hours: 1);
+        Map m1, m2, merged;
+
+        m1 = {'a': 1, 'b': 2};
+        m2 = {'b': 2, 'c': 3};
+        merged = {'a': 1, 'b': 2, 'c': 3};
+        expect(mergeMaps(m1, m2), equals(merged));
+
+        m1 = {'a': 1, 'b': {'bb': 1, 'dd': 100}, 'list': [1, 2, 3],
+              'time': hour};
+        m2 = {'b': {'cc': 2, 'dd': 100}, 'd': 10, 'list': [1, 2, 3],
+              'time': hour};
+        merged = {'a': 1, 'b': {'bb': 1, 'cc': 2, 'dd': 100},
+                  'list': [1, 2, 3], 'd': 10, 'time': hour};
+        expect(mergeMaps(m1, m2), equals(merged));
+      });
+
+      test('throws when unable to merge.', () {
+        Map m1, m2;
+
+        m1 = {'a': 1};
+        m2 = {'a': '1'};
+        expect(() => mergeMaps(m1, m2), throws);
+
+        m1 = {'a': {'b': 1}};
+        m2 = {'a': {'b': '1'}};
+        expect(() => mergeMaps(m1, m2), throws);
+
+        m1 = {'a': new Duration(hours: 1)};
+        m2 = {'a': new Duration(hours: 2)};
+        expect(() => mergeMaps(m1, m2), throws);
+      });
+
+    });
 }
