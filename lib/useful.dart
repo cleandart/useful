@@ -3,6 +3,7 @@ library useful;
 import 'dart:collection';
 import 'dart:math' as math;
 import 'package:quiver/iterables.dart';
+import 'package:collection/equality.dart' as eq;
 import 'package:logging/logging.dart';
 
 part 'src/tuple.dart';

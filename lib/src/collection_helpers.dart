@@ -37,3 +37,18 @@ clone(data) {
   }
   return data;
 }
+
+Map mergeMaps(Map map1, Map map2) {
+  Iterable keys = merge([map1.keys, map2.keys]).toSet();
+  return new Map.fromIterable(keys, key: (key) => key, value: (key) {
+    var val1 = map1[key];
+    var val2 = map2[key];
+    if (val1 is Map && val2 is Map) return mergeMaps(val1, val2);
+    if (const eq.DeepCollectionEquality().equals(val1, val2)) return val1;
+    if (val1 == null) return val2;
+    if (val2 == null) return val1;
+    throw 'Impossible to merge maps!\n'
+          'Map1: $map1\nMap2: $map2\n'
+          'Maps differ in value of $key.';
+  });
+}
