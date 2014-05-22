@@ -39,7 +39,7 @@ clone(data) {
 }
 
 Map mergeMaps(Map map1, Map map2) {
-  Iterable keys = merge([map1.keys, map2.keys]).toSet();
+  Iterable keys = concat([map1.keys, map2.keys]).toSet();
   return new Map.fromIterable(keys, key: (key) => key, value: (key) {
     var val1 = map1[key];
     var val2 = map2[key];
