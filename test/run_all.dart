@@ -8,6 +8,7 @@ import 'priority_map_test.dart' as priority_map_test;
 import 'uitertools_test.dart' as uitertools_test;
 import 'collection_helpers_test.dart' as clone_test;
 import "frozen_test.dart" as frozen_test;
+import 'statistics_test.dart' as statictics_test;
 
 main() {
   tuple_test.main();
@@ -15,5 +16,6 @@ main() {
   uitertools_test.main();
   clone_test.main();
   frozen_test.main();
+  statictics_test.main();
 }
 
