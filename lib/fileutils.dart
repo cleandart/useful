@@ -20,7 +20,7 @@ Future<File> writeAsString(dynamic file, String data, {recursive: false}) {
  * the default, the file is created only if all directories in the path exist.
  * If [recursive] is true, all non-existing path components are created.
  */
-Future<File> writeAsBytes(dynamic file, String data, {recursive: false}) {
+Future<File> writeAsBytes(dynamic file, List<int> data, {recursive: false}) {
   File _f = _toFile(file);
   return _writeAsSth(_f, _f.writeAsBytes, data, recursive);
 }
@@ -33,7 +33,7 @@ Future<File> writeAsBytes(dynamic file, String data, {recursive: false}) {
  */
 writeAsStringSync(dynamic file, String data, {recursive: false}) {
   File _f = _toFile(file);
-  return _writeAsSth(_f, _f.writeAsStringSync, data, recursive);
+  return _writeAsSthSync(_f, _f.writeAsStringSync, data, recursive);
 }
 
 /**
@@ -42,9 +42,9 @@ writeAsStringSync(dynamic file, String data, {recursive: false}) {
  * the default, the file is created only if all directories in the path exist.
  * If [recursive] is true, all non-existing path components are created.
  */
-void writeAsBytesSync(dynamic file, String data, {recursive: false}) {
+void writeAsBytesSync(dynamic file, List<int> data, {recursive: false}) {
   File _f = _toFile(file);
-  _writeAsSth(_f, _f.writeAsBytesSync, data, recursive);
+  _writeAsSthSync(_f, _f.writeAsBytesSync, data, recursive);
 }
 
 _writeAsSthSync(File f, write(data), data, recursive) {
