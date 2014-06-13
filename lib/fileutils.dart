@@ -4,7 +4,7 @@ import 'dart:io';
 
 /**
  * Writes data to file provided. [file] can be either [File] or [String], in
- * latter case, it is expected to be path to the file. If [recursive] is false,
+ * latter case it is expected to be path to the file. If [recursive] is false,
  * the default, the file is created only if all directories in the path exist.
  *  If [recursive] is true, all non-existing path components are created.
  */
