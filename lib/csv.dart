@@ -18,7 +18,7 @@ String listToCSV(List<List> data, {String sep: ',', String linesep: '\n'}) {
   return data.map((line) => line.map(prepare).join(sep)).join(linesep);
 }
 
-String mapToCSV(List<Map> data, {header: null, String sep: ',', String linesep: '\n'}) {
+String mapToCSV(List<Map> data, {List header: null, String sep: ',', String linesep: '\n'}) {
   var keys = header == null ? getKeysFromMaps(data) : header;
   List<List> newData = [keys];
   data.forEach((Map m) {
@@ -30,7 +30,6 @@ String mapToCSV(List<Map> data, {header: null, String sep: ',', String linesep: 
 List getKeysFromMaps(List<Map> data) {
   Set keys = new Set();
   data.forEach((m) {
-    print(m.keys);
     keys = keys.union(new Set.from(m.keys));
   });
   return keys.toList();
