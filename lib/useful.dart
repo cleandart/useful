@@ -18,4 +18,3 @@ part 'src/map_mixin.dart';
 part 'src/logging.dart';
 part 'src/collection_helpers.dart';
 part 'src/statistics.dart';
-

@@ -58,10 +58,12 @@ main() {
     });
 
     test('slice', (){
-      Map map = {'a':1, 'b':2, 'c':3};
+      Map map = {'a':1, 'b':2, 'c':3, 'x': {'a': {'b': 2}, 'c': 10}};
       expect(slice(map, ['a', 'b']), equals({'a': 1, 'b':2}));
       expect(slice(map, []), equals({}));
       expect(slice(map, ['c', 'd', 'e']), equals({'c': 3}));
+      expect(slice(map, ['a', ['x', 'a', 'b']]), equals({'a': 1, 'x': {'a': {'b': 2}}}));
+      expect(slice(map, ['a', 'x.a.d']), equals({'a': 1}));
     });
 
     group('Merge maps', () {
@@ -99,5 +101,59 @@ main() {
         expect(() => mergeMaps(m1, m2), throws);
       });
 
+    });
+
+    test('Contains in.', () {
+      expect(containsIn(null, []), isTrue);
+      expect(containsIn(null, 'a'), isFalse);
+      expect(containsIn(null, ['a']), isFalse);
+      expect(containsIn([], ['a']), isFalse);
+      expect(containsIn([8], '5'), isFalse);
+      expect(containsIn([5, 1, 7, 10], [2]), isTrue);
+      expect(containsIn([5, 1, 7, 10], [4]), isFalse);
+      expect(
+          containsIn({'a': [5, 1, {'x': 'y'}, 10], 'b': {'c': 2}}, ['a', 2, 'x']),
+          isTrue);
+      expect(containsIn({'a': [5, 1, {'x': 'y'}, 10], 'b': {'c': 2}}, 'a.c'),
+          isFalse);
+      expect(containsIn({'a': [5, 1, {'x': 'y'}, 10], 'b': {'c': 2}}, 'b.c'),
+          isTrue);
+    });
+
+    test('Get in.', () {
+      expect(getIn(8, []), equals(8));
+      expect(getIn([8], '5'), null);
+      expect(getIn([], 'a'), null);
+      expect(getIn({'a': [5, 1, 7, 10], 'b': {'c': 2}}, ['a', 2]), equals(7));
+      expect(getIn({'a': [5, 1, {'x': 'y'}, 10], 'b': {'c': 2}}, ['a', 2]),
+          equals({'x': 'y'}));
+      expect(getIn({'a': [5, 1, {'x': 'y'}, 10], 'b': {'c': 2}}, ['a', 2, 'x']),
+          equals('y'));
+      expect(getIn({'a': [5, 1, {'x': 'y'}, 10], 'b': {'c': 2}}, 'a.c'),
+          equals(null));
+      expect(getIn({'a': [5, 1, {'x': 'y'}, 10], 'b': {'c': 2}}, 'a.2'),
+          equals(null));
+      expect(getIn({'a': [5, 1, {'x': 'y'}, 10], 'b': {'c': 2}}, 'b.c'),
+          equals(2));
+    });
+
+    test('Change.', () {
+      var m1 = {'a': 1, 'b': {'x': 2, 'y': 3}, 'c': [1, 2, {'x': 'y'}]};
+      var m11 = {'a': 1, 'b': {'x': 2, 'y': 3}, 'c': [1, 2, {'x': 'y'}]};
+      var m2 = {'b': {'x': 22, 'y': 3}, 'c': [1, 2, {'x': 'z'}]};
+      var m3 = {'b': {'x': 2, 'y': 3}, 'c': [1, 2, {'x': 'z'}]};
+
+      expect(change(m1, m11), equals({}));
+      expect(change(m1, m2), equals({
+        'a': [1, null],
+        'b': {'x': [2, 22]},
+        'c': [[1, 2, {'x': 'y'}], [1, 2, {'x': 'z'}]]
+      }));
+      expect(change({}, {}, ['a.b.c']), equals({}));
+      expect(change(m1, m2, ['a']), equals({'a': [1, null]}));
+      expect(change(m1, m2, ['d']), equals({}));
+      expect(change(m1, m2, ['b', 'x']), equals({'b': {'x': [2, 22]}}));
+      expect(change(m1, m2, ['b.x']), equals({'b': {'x': [2, 22]}}));
+      expect(change(m1, m2, ['b.y']), equals({}));
     });
 }
