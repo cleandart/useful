@@ -34,8 +34,8 @@ Map mergeMaps(Map map1, Map map2) {
   });
 }
 
-containsIn(dynamic struct, dynamic keyPath) =>
-    _containsIn(struct, _prepare(keyPath));
+containsIn(dynamic struct, dynamic keyPath, {bool nullIfAbsent: false}) =>
+    _containsIn(struct, _prepare(keyPath), nullIfAbsent);
 
 /**
  * [struct] has to support operator [], [keyPath] is either key in [struct] or
@@ -47,31 +47,32 @@ containsIn(dynamic struct, dynamic keyPath) =>
  * getField({'a': [5, 1, 7, 10], 'b': {'c': 2}}, ['a', 2]) results in 7
  * getField({'a': [5, 1, 7, 10], 'b': {'c': 2}}, 'b.c') results in 2
  */
-getIn(dynamic struct, dynamic keyPath, {orElse(): _getNull}) =>
-  _getIn(struct, _prepare(keyPath), orElse);
+getIn(dynamic struct, dynamic keyPath, {orElse(): _getNull,
+  bool nullIfAbsent: false}) =>
+  _getIn(struct, _prepare(keyPath), orElse, nullIfAbsent);
 
-bool _containsIn(dynamic struct, Iterable keyPath) {
+bool _containsIn(dynamic struct, Iterable keyPath, bool nullIfAbsent) {
   if (keyPath.isEmpty) return true;
   if (struct == null) return false;
 
   var key = keyPath.first;
   if (struct is List) {
-    try {
-      return _containsIn(struct[key], keyPath.skip(1));
-    } catch (e) {
+    if (key is int && key >= 0 && key < struct.length) {
+      return _containsIn(struct[key], keyPath.skip(1), nullIfAbsent);
+    } else {
       return false;
     }
   }
   if (struct is Map) {
-    if (!struct.containsKey(keyPath.first)) return false;
-    return _containsIn(struct[key], keyPath.skip(1));
+    if (!nullIfAbsent && !struct.containsKey(keyPath.first)) return false;
+    return _containsIn(struct[key], keyPath.skip(1), nullIfAbsent);
   }
 
   throw new ArgumentError('struct $struct is neither Map nor List');
 }
 
-dynamic _getIn(dynamic struct, Iterable keyPath, orElse()) =>
-  (!_containsIn(struct, keyPath))?
+dynamic _getIn(dynamic struct, Iterable keyPath, orElse(), nullIfAbsent) =>
+  (!_containsIn(struct, keyPath, nullIfAbsent))?
       orElse() : keyPath.fold(struct, (prevMap, key) => prevMap[key]);
 
 _getNull() => null;
@@ -88,14 +89,16 @@ List _prepare(keyPath) {
  * [map] is the Map to be sliced
  * [keys] is a list of keys to be preserved
  */
-Map slice(Map original, List keyPaths) {
+Map slice(Map original, List keyPaths, {bool throwIfAbsent: false}) {
   Map result = {};
   List<List> _keyPaths = keyPaths.map(_prepare).toList();
   if (_keyPaths.any((p) => p.isEmpty)) return original;
 
   _keyPaths.forEach((path) {
-    if (_containsIn(original, path)) {
+    if (_containsIn(original, path, false)) {
       _addPath(original, result, path);
+    } else if (throwIfAbsent) {
+      throw new Exception('Path $path is not present in $original');
     }
   });
 

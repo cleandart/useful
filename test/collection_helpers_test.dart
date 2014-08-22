@@ -57,13 +57,15 @@ main() {
       });
     });
 
-    test('slice', (){
+    test('slice', () {
       Map map = {'a':1, 'b':2, 'c':3, 'x': {'a': {'b': 2}, 'c': 10}};
       expect(slice(map, ['a', 'b']), equals({'a': 1, 'b':2}));
       expect(slice(map, []), equals({}));
       expect(slice(map, ['c', 'd', 'e']), equals({'c': 3}));
+      expect(() => slice(map, ['c', 'd'], throwIfAbsent: true), throws);
       expect(slice(map, ['a', ['x', 'a', 'b']]), equals({'a': 1, 'x': {'a': {'b': 2}}}));
       expect(slice(map, ['a', 'x.a.d']), equals({'a': 1}));
+      expect(() => slice(map, ['a', 'x.a.d'], throwIfAbsent: true), throws);
     });
 
     group('Merge maps', () {
@@ -104,6 +106,8 @@ main() {
     });
 
     test('Contains in.', () {
+      Map m = {'a': [5, 1, {'x': 'y'}, 10], 'b': {'c': 2}};
+
       expect(containsIn(null, []), isTrue);
       expect(containsIn(null, 'a'), isFalse);
       expect(containsIn(null, ['a']), isFalse);
@@ -111,30 +115,33 @@ main() {
       expect(containsIn([8], '5'), isFalse);
       expect(containsIn([5, 1, 7, 10], [2]), isTrue);
       expect(containsIn([5, 1, 7, 10], [4]), isFalse);
-      expect(
-          containsIn({'a': [5, 1, {'x': 'y'}, 10], 'b': {'c': 2}}, ['a', 2, 'x']),
-          isTrue);
-      expect(containsIn({'a': [5, 1, {'x': 'y'}, 10], 'b': {'c': 2}}, 'a.c'),
-          isFalse);
-      expect(containsIn({'a': [5, 1, {'x': 'y'}, 10], 'b': {'c': 2}}, 'b.c'),
-          isTrue);
+      expect(containsIn(m, ['a', 2, 'x']), isTrue);
+      expect(containsIn(m, 'a.c'), isFalse);
+      expect(containsIn(m, 'b.c'), isTrue);
+
+      expect(containsIn(m, 'b.d', nullIfAbsent: true), isTrue);
+      expect(containsIn(m, 'b.d', nullIfAbsent: false), isFalse);
+      expect(containsIn(m, 'b.d.e', nullIfAbsent: true), isFalse);
+      expect(containsIn(m, 'b.d.e', nullIfAbsent: false), isFalse);
     });
 
     test('Get in.', () {
+      var m = {'a': [5, 1, {'x': 'y'}, 10], 'b': {'c': 2}};
+
       expect(getIn(8, []), equals(8));
       expect(getIn([8], '5'), null);
       expect(getIn([], 'a'), null);
       expect(getIn({'a': [5, 1, 7, 10], 'b': {'c': 2}}, ['a', 2]), equals(7));
-      expect(getIn({'a': [5, 1, {'x': 'y'}, 10], 'b': {'c': 2}}, ['a', 2]),
-          equals({'x': 'y'}));
-      expect(getIn({'a': [5, 1, {'x': 'y'}, 10], 'b': {'c': 2}}, ['a', 2, 'x']),
-          equals('y'));
-      expect(getIn({'a': [5, 1, {'x': 'y'}, 10], 'b': {'c': 2}}, 'a.c'),
-          equals(null));
-      expect(getIn({'a': [5, 1, {'x': 'y'}, 10], 'b': {'c': 2}}, 'a.2'),
-          equals(null));
-      expect(getIn({'a': [5, 1, {'x': 'y'}, 10], 'b': {'c': 2}}, 'b.c'),
-          equals(2));
+      expect(getIn(m, ['a', 2]), equals({'x': 'y'}));
+      expect(getIn(m, ['a', 2, 'x']), equals('y'));
+      expect(getIn(m, 'a.c'), equals(null));
+      expect(getIn(m, 'a.2'), equals(null));
+      expect(getIn(m, 'b.c'), equals(2));
+
+      expect(getIn(m, 'b.d', orElse: () => 47), equals(47));
+      expect(getIn(m, 'b.d', orElse: () => 47, nullIfAbsent: true), equals(null));
+      expect(getIn(m, 'b.d', nullIfAbsent: true), equals(null));
+      expect(getIn(m, 'b.d'), equals(null));
     });
 
     test('Change.', () {
