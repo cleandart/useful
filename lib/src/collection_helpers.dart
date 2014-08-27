@@ -51,17 +51,14 @@ getIn(dynamic struct, dynamic keyPath, {orElse(): _getNull,
   bool nullIfAbsent: false}) =>
   _getIn(struct, _prepare(keyPath), orElse, nullIfAbsent);
 
-setIn(dynamic struct, dynamic keyPath, dynamic value, {orElse(): _getNull,
-  bool nullIfAbsent: false, overwriteNull: false}) {
+setIn(dynamic struct, dynamic keyPath, dynamic value) {
   List prepPath = _prepare(keyPath);
   if (prepPath.isEmpty) return;
-  var beforeLastKey = _getIn(struct, prepPath.getRange(0, prepPath.length-1), orElse, nullIfAbsent);
-  if (beforeLastKey == null) {
-    orElse();
-    return;
-  }
-  if ((beforeLastKey[prepPath.last] == null) && (!overwriteNull)) {
-    orElse();
+  var throwFunction = () => throw new Exception('struct $struct does not contain keypath: $keyPath');
+  var beforeLastKey = _getIn(struct, prepPath.getRange(0, prepPath.length-1),
+      throwFunction, false);
+  if (beforeLastKey[prepPath.last] == null) {
+    throwFunction();
   } else {
     beforeLastKey[prepPath.last] = value;
   }
