@@ -51,6 +51,22 @@ getIn(dynamic struct, dynamic keyPath, {orElse(): _getNull,
   bool nullIfAbsent: false}) =>
   _getIn(struct, _prepare(keyPath), orElse, nullIfAbsent);
 
+setIn(dynamic struct, dynamic keyPath, dynamic value, {orElse(): _getNull,
+  bool nullIfAbsent: false, overwriteNull: false}) {
+  List prepPath = _prepare(keyPath);
+  if (prepPath.isEmpty) return;
+  var beforeLastKey = _getIn(struct, prepPath.getRange(0, prepPath.length-1), orElse, nullIfAbsent);
+  if (beforeLastKey == null) {
+    orElse();
+    return;
+  }
+  if ((beforeLastKey[prepPath.last] == null) && (!overwriteNull)) {
+    orElse();
+  } else {
+    beforeLastKey[prepPath.last] = value;
+  }
+}
+
 bool _containsIn(dynamic struct, Iterable keyPath, bool nullIfAbsent) {
   if (keyPath.isEmpty) return true;
   if (struct == null) return false;
