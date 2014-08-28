@@ -54,9 +54,8 @@ getIn(dynamic struct, dynamic keyPath, {orElse(): _getNull,
 setIn(dynamic struct, dynamic keyPath, dynamic value) {
   Iterable prepPath = _prepare(keyPath);
   if (prepPath.isEmpty) return;
-  var throwFunction = () => throw new Exception('struct $struct does not contain keypath: $keyPath');
-  var beforeLastKey = _getIn(struct, prepPath.take(prepPath.length-1),
-      throwFunction, false);
+  var throwFunction = () => throw new Exception('Keypath $keyPath does not exist in struct $struct');
+  var beforeLastKey = getIn(struct, prepPath.take(prepPath.length-1), orElse: throwFunction);
   if (containsIn(beforeLastKey, prepPath.last)) {
     beforeLastKey[prepPath.last] = value;
   } else {
@@ -70,7 +69,7 @@ bool _containsIn(dynamic struct, Iterable keyPath, bool nullIfAbsent) {
   if (struct == null) return false;
 
   var key = keyPath.first;
-  if (struct is Iterable) {
+  if (struct is List) {
     if (key is int && key >= 0 && key < struct.length) {
       return _containsIn(struct[key], keyPath.skip(1), nullIfAbsent);
     } else {
@@ -82,7 +81,7 @@ bool _containsIn(dynamic struct, Iterable keyPath, bool nullIfAbsent) {
     return _containsIn(struct[key], keyPath.skip(1), nullIfAbsent);
   }
 
-  throw new ArgumentError('struct $struct is neither Map nor Iterable');
+  throw new ArgumentError('struct $struct is neither Map nor List');
 }
 
 dynamic _getIn(dynamic struct, Iterable keyPath, orElse(), nullIfAbsent) =>
