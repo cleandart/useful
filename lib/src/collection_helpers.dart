@@ -92,7 +92,7 @@ _getNull() => null;
 
 Iterable _prepare(keyPath) {
   if (keyPath is Iterable) return keyPath;
-  if (keyPath is String) return keyPath.split('.');
+  if (keyPath is String) return keyPath.split('.').toList();
   throw new ArgumentError('Keypath has to be either Iterable or String.');
 }
 
