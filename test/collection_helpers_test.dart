@@ -144,6 +144,24 @@ main() {
       expect(getIn(m, 'b.d'), equals(null));
     });
 
+    test('Set in.', () {
+      var m = {'a': [5, 1, {'x': 'y', 'z':{'w':5}}, 10], 'b': {'c': 2}};
+      var expected = clone(m);
+
+      runExp() => expect(m,equals(expected));
+
+      expect(() => setIn(m, [], 'x'), throws);
+      setIn(m, 'b.c',4);
+      expected['b']['c'] = 4;
+      runExp();
+      expect(() => setIn(m, 'b.c.d', 1), throws);
+      expect(() => setIn(m, ['b','d'],'x'), throws);
+      setIn(m, ['a',2,'z','w'], 12);
+      expected['a'][2]['z']['w'] = 12;
+      runExp();
+
+    });
+
     test('Change.', () {
       var m1 = {'a': 1, 'b': {'x': 2, 'y': 3}, 'c': [1, 2, {'x': 'y'}]};
       var m11 = {'a': 1, 'b': {'x': 2, 'y': 3}, 'c': [1, 2, {'x': 'y'}]};

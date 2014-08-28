@@ -39,7 +39,7 @@ containsIn(dynamic struct, dynamic keyPath, {bool nullIfAbsent: false}) =>
 
 /**
  * [struct] has to support operator [], [keyPath] is either key in [struct] or
- * list of keys joined by '.' or [List] of keys describing path in [struct] (the
+ * list of keys joined by '.' or [Iterable] of keys describing path in [struct] (the
  * latter two can be used for deeper structures). Key joining by '.' works only
  * for string keys ('names.2' will be translated to ['names', '2']).
  *
@@ -50,6 +50,19 @@ containsIn(dynamic struct, dynamic keyPath, {bool nullIfAbsent: false}) =>
 getIn(dynamic struct, dynamic keyPath, {orElse(): _getNull,
   bool nullIfAbsent: false}) =>
   _getIn(struct, _prepare(keyPath), orElse, nullIfAbsent);
+
+setIn(dynamic struct, dynamic keyPath, dynamic value) {
+  Iterable prepPath = _prepare(keyPath);
+  if (prepPath.isEmpty) throw new Exception("Keypath is empty");
+  var throwFunction = () => throw new Exception('Keypath $keyPath does not exist in struct $struct');
+  var beforeLastKey = getIn(struct, prepPath.take(prepPath.length-1), orElse: throwFunction);
+  if (containsIn(beforeLastKey, prepPath.last)) {
+    beforeLastKey[prepPath.last] = value;
+  } else {
+    throwFunction();
+  }
+
+}
 
 bool _containsIn(dynamic struct, Iterable keyPath, bool nullIfAbsent) {
   if (keyPath.isEmpty) return true;
@@ -77,10 +90,10 @@ dynamic _getIn(dynamic struct, Iterable keyPath, orElse(), nullIfAbsent) =>
 
 _getNull() => null;
 
-List _prepare(keyPath) {
-  if (keyPath is List) return keyPath;
-  if (keyPath is String) return keyPath.split('.');
-  throw new ArgumentError('Keypath has to be either List or String.');
+Iterable _prepare(keyPath) {
+  if (keyPath is Iterable) return keyPath;
+  if (keyPath is String) return keyPath.split('.').toList();
+  throw new ArgumentError('Keypath has to be either Iterable or String.');
 }
 
 /**
