@@ -39,7 +39,7 @@ containsIn(dynamic struct, dynamic keyPath, {bool nullIfAbsent: false}) =>
 
 /**
  * [struct] has to support operator [], [keyPath] is either key in [struct] or
- * list of keys joined by '.' or [List] of keys describing path in [struct] (the
+ * list of keys joined by '.' or [Iterable] of keys describing path in [struct] (the
  * latter two can be used for deeper structures). Key joining by '.' works only
  * for string keys ('names.2' will be translated to ['names', '2']).
  *
@@ -52,16 +52,17 @@ getIn(dynamic struct, dynamic keyPath, {orElse(): _getNull,
   _getIn(struct, _prepare(keyPath), orElse, nullIfAbsent);
 
 setIn(dynamic struct, dynamic keyPath, dynamic value) {
-  List prepPath = _prepare(keyPath);
+  Iterable prepPath = _prepare(keyPath);
   if (prepPath.isEmpty) return;
   var throwFunction = () => throw new Exception('struct $struct does not contain keypath: $keyPath');
-  var beforeLastKey = _getIn(struct, prepPath.getRange(0, prepPath.length-1),
+  var beforeLastKey = _getIn(struct, prepPath.take(prepPath.length-1),
       throwFunction, false);
-  if (beforeLastKey[prepPath.last] == null) {
-    throwFunction();
-  } else {
+  if (containsIn(beforeLastKey, prepPath.last)) {
     beforeLastKey[prepPath.last] = value;
+  } else {
+    throwFunction();
   }
+
 }
 
 bool _containsIn(dynamic struct, Iterable keyPath, bool nullIfAbsent) {
@@ -69,7 +70,7 @@ bool _containsIn(dynamic struct, Iterable keyPath, bool nullIfAbsent) {
   if (struct == null) return false;
 
   var key = keyPath.first;
-  if (struct is List) {
+  if (struct is Iterable) {
     if (key is int && key >= 0 && key < struct.length) {
       return _containsIn(struct[key], keyPath.skip(1), nullIfAbsent);
     } else {
@@ -81,7 +82,7 @@ bool _containsIn(dynamic struct, Iterable keyPath, bool nullIfAbsent) {
     return _containsIn(struct[key], keyPath.skip(1), nullIfAbsent);
   }
 
-  throw new ArgumentError('struct $struct is neither Map nor List');
+  throw new ArgumentError('struct $struct is neither Map nor Iterable');
 }
 
 dynamic _getIn(dynamic struct, Iterable keyPath, orElse(), nullIfAbsent) =>
@@ -90,10 +91,10 @@ dynamic _getIn(dynamic struct, Iterable keyPath, orElse(), nullIfAbsent) =>
 
 _getNull() => null;
 
-List _prepare(keyPath) {
-  if (keyPath is List) return keyPath;
+Iterable _prepare(keyPath) {
+  if (keyPath is Iterable) return keyPath;
   if (keyPath is String) return keyPath.split('.');
-  throw new ArgumentError('Keypath has to be either List or String.');
+  throw new ArgumentError('Keypath has to be either Iterable or String.');
 }
 
 /**
