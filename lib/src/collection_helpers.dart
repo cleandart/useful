@@ -53,7 +53,7 @@ getIn(dynamic struct, dynamic keyPath, {orElse(): _getNull,
 
 setIn(dynamic struct, dynamic keyPath, dynamic value) {
   Iterable prepPath = _prepare(keyPath);
-  if (prepPath.isEmpty) return;
+  if (prepPath.isEmpty) throw new Exception("Keypath is empty");
   var throwFunction = () => throw new Exception('Keypath $keyPath does not exist in struct $struct');
   var beforeLastKey = getIn(struct, prepPath.take(prepPath.length-1), orElse: throwFunction);
   if (containsIn(beforeLastKey, prepPath.last)) {

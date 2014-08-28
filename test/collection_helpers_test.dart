@@ -150,12 +150,11 @@ main() {
 
       runExp() => expect(m,equals(expected));
 
-      setIn(m, [], 'x');
-      runExp();
+      expect(() => setIn(m, [], 'x'), throws);
       setIn(m, 'b.c',4);
       expected['b']['c'] = 4;
       runExp();
-      expect(() => setIn(m, ['b','c','d'], 1), throws);
+      expect(() => setIn(m, 'b.c.d', 1), throws);
       expect(() => setIn(m, ['b','d'],'x'), throws);
       setIn(m, ['a',2,'z','w'], 12);
       expected['a'][2]['z']['w'] = 12;
