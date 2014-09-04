@@ -1,17 +1,12 @@
-library useful.clean_stream;
+library useful.socket_jsonizer;
 
 import 'dart:io';
 import 'dart:async';
 import 'package:logging/logging.dart';
 import 'dart:convert';
+import 'package:useful/useful.dart';
 
-Logger _logger = new Logger("clean_socket");
-
-class Tuple {
-  var fst;
-  var snd;
-  Tuple(this.fst, this.snd);
-}
+Logger _logger = new Logger("useful.socket_jsonizer");
 
 Tuple decodeLeadingNum(String message) {
   // Take while it's a digit
@@ -47,12 +42,12 @@ List<String> getJSONs(String message, [Map incompleteJson]) {
     // Assert = message[i] is a beginning of some valid message => the leading
     // few characters determine the length of message
     Tuple messageInfo = decodeLeadingNum(message.substring(i, i+10));
-    messageLength = messageInfo.fst;
+    messageLength = messageInfo[0];
     if (messageLength == -1) {
       // Length of string was not sent entirely
       break;
     }
-    i += messageInfo.snd;
+    i += messageInfo[1];
     if (messageLength+i > message.length) {
       // We want to send more chars than this message contains =>
       // it was not sent entirely
