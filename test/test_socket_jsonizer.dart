@@ -1,4 +1,4 @@
-library useful.test.clean_stream;
+library useful.test.socket_jsonizer;
 
 import 'package:unittest/unittest.dart';
 import 'package:useful/socket_jsonizer.dart';
