@@ -10,7 +10,7 @@ Logger _logger = new Logger("useful.socket_jsonizer");
 
 Tuple decodeLeadingNum(String message) {
   // Take while it's a digit
-  List codeUnits = message.codeUnits.takeWhile((c) => ((c >= 48) && (c <= 57))).toList();
+  Iterable codeUnits = message.codeUnits.takeWhile((c) => ((c >= 48) && (c <= 57)));
   // If there are only digits, the leading number is problably not transfered whole
   if ((codeUnits.length == message.length) || (codeUnits.isEmpty)) return new Tuple(-1, -1);
   return new Tuple(num.parse(new String.fromCharCodes(codeUnits)), codeUnits.length);
@@ -65,8 +65,10 @@ List<String> getJSONs(String message, [Map incompleteJson]) {
   return jsons;
 }
 
-writeJSON(IOSink iosink, String json) =>
-    iosink.write("${json.length}${json}");
+writeJSON(IOSink iosink, dynamic object) {
+  String encoded = JSON.encode(object);
+  iosink.write("${encoded.length}${encoded}");
+}
 
 Stream toJsonStream(Stream stream) =>
     stream.transform(new StreamTransformer(
