@@ -8,12 +8,17 @@ import 'package:useful/useful.dart';
 
 Logger _logger = new Logger("useful.socket_jsonizer");
 
-Tuple decodeLeadingNum(String message) {
+Tuple decodeLeadingNum(String message, int pos) {
   // Take while it's a digit
-  Iterable codeUnits = message.codeUnits.takeWhile((c) => ((c >= 48) && (c <= 57)));
+  String numbers = "";
+  for (var i = pos; i < message.length; i++) {
+    if ((message.codeUnitAt(i) >= 48) && (message.codeUnitAt(i) <= 57)) {
+      numbers += message[i];
+    } else break;
+  }
   // If there are only digits, the leading number is problably not transfered whole
-  if ((codeUnits.length == message.length) || (codeUnits.isEmpty)) return new Tuple(-1, -1);
-  return new Tuple(num.parse(new String.fromCharCodes(codeUnits)), codeUnits.length);
+  if ((numbers.length == message.length) || (numbers.isEmpty)) return new Tuple(-1, -1);
+  return new Tuple(num.parse(numbers), numbers.length);
 }
 
 /**
@@ -35,13 +40,14 @@ List<String> getJSONs(String message, [Map incompleteJson]) {
   }
 
   int i = 0;
+
   while (i < message.length) {
     // Beginning of new message
     // Performance upgrade, there's not going to be JSON longer than 10 bil chars..
     // Returns -1 if there are only digits or no digits
     // Assert = message[i] is a beginning of some valid message => the leading
     // few characters determine the length of message
-    Tuple messageInfo = decodeLeadingNum(message.substring(i, i+10));
+    Tuple messageInfo = decodeLeadingNum(message, i);
     messageLength = messageInfo[0];
     if (messageLength == -1) {
       // Length of string was not sent entirely
@@ -57,7 +63,7 @@ List<String> getJSONs(String message, [Map incompleteJson]) {
     lastAdditionAt = i+messageLength;
     i += messageLength;
   }
-  if (lastAdditionAt != message.length-1) {
+  if (lastAdditionAt != message.length) {
     // message is incomplete
     incompleteJson["msg"] = message.substring(lastAdditionAt);
   } else incompleteJson["msg"] = "";
@@ -65,9 +71,12 @@ List<String> getJSONs(String message, [Map incompleteJson]) {
   return jsons;
 }
 
-writeJSON(IOSink iosink, dynamic object) {
+writeJSON(IOSink iosink, dynamic object) =>
+    iosink.write(prepareObjectToSend(object));
+
+prepareObjectToSend(dynamic object) {
   String encoded = JSON.encode(object);
-  iosink.write("${encoded.length}${encoded}");
+  return "${encoded.length}${encoded}";
 }
 
 Stream toJsonStream(Stream stream) =>
@@ -77,7 +86,7 @@ Stream toJsonStream(Stream stream) =>
           Map incompleteJson = {};
           input.listen((List<int> data) {
               Iterable jsons = getJSONs(UTF8.decode(data), incompleteJson).map(JSON.decode);
-              jsons.forEach((json) => sc.add(json));
+              jsons.forEach(sc.add);
             },
             onError: sc.addError,
             onDone: sc.close,

@@ -9,6 +9,7 @@ import 'uitertools_test.dart' as uitertools_test;
 import 'collection_helpers_test.dart' as clone_test;
 import "frozen_test.dart" as frozen_test;
 import 'statistics_test.dart' as statictics_test;
+import 'test_socket_jsonizer.dart' as socket_jsonizer_test;
 
 main() {
   tuple_test.main();
@@ -17,5 +18,6 @@ main() {
   clone_test.main();
   frozen_test.main();
   statictics_test.main();
+  socket_jsonizer_test.main();
 }
 
