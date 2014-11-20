@@ -71,11 +71,11 @@ List<String> getJSONs(String message, [Map incompleteJson]) {
   return jsons;
 }
 
-writeJSON(IOSink iosink, dynamic object) =>
-    iosink.write(prepareObjectToSend(object));
+writeJSON(IOSink iosink, dynamic object, {toEncodable(object)}) =>
+    iosink.write(prepareObjectToSend(object, toEncodable: toEncodable));
 
-prepareObjectToSend(dynamic object) {
-  String encoded = JSON.encode(object);
+prepareObjectToSend(dynamic object, {toEncodable(object)}) {
+  String encoded = JSON.encode(object, toEncodable: toEncodable);
   return "${encoded.length}${encoded}";
 }
 

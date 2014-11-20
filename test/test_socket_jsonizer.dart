@@ -127,5 +127,13 @@ run() {
 
   });
 
+  test("toEncodable can be used in prepareObjectToSend", () {
+    var nonEncodable = {"d": new Duration()};
+    expect(() => prepareObjectToSend(nonEncodable), throws);
+    expect(
+        prepareObjectToSend(nonEncodable, toEncodable: (o) => "0:00:00"),
+        '15{"d":"0:00:00"}');
+  });
+
 
 }
